@@ -1,0 +1,39 @@
+# docker-compose.yml for Products API
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: productsdb
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  api:
+    build: .
+    ports:
+      - "8001:8001"
+    depends_on:
+      db:
+        condition: service_started
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - app-network
+    environment:
+      - SERVICE_NAME=product-api
+
+networks:
+  app-network:
+    enable_ipv6: true
+
+volumes:
+  postgres_data:
