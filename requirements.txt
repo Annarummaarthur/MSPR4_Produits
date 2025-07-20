@@ -4,8 +4,9 @@ sqlalchemy~=2.0.41
 psycopg2-binary
 python-dotenv~=1.1.1
 email-validator
-pytest
+pytest~=8.4.1
 httpx
 
 aio-pika~=9.5.5
 pydantic~=2.11.7
+starlette~=0.47.2
