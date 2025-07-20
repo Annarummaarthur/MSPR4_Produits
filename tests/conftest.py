@@ -1,3 +1,4 @@
+# tests/conftest.py
 import pytest
 import os
 from sqlalchemy import create_engine
@@ -32,7 +33,9 @@ def db_session(db_engine):
 
 @pytest.fixture(scope="function")
 def auth_headers():
-    return {"Authorization": "Bearer supersecrettoken123"}
+    """Provide authentication headers for tests"""
+    api_token = os.getenv("API_TOKEN", "supersecrettoken123")
+    return {"Authorization": f"Bearer {api_token}"}
 
 
 @pytest.fixture(scope="function")
@@ -43,3 +46,23 @@ def client(db_session):
     app.dependency_overrides[get_db] = override_get_db
     yield TestClient(app)
     app.dependency_overrides.clear()
+
+
+@pytest.fixture(scope="function")
+def sample_product_data():
+    """Provide sample product data for tests"""
+    return {
+        "name": "Test Produit",
+        "price": 12.34,
+        "description": "Description test",
+        "color": "Rouge",
+        "stock": 5,
+    }
+
+
+@pytest.fixture(scope="function")
+def created_product(client, auth_headers, sample_product_data):
+    """Create a product for tests that need an existing product"""
+    response = client.post("/products", json=sample_product_data, headers=auth_headers)
+    assert response.status_code == 200
+    return response.json()
