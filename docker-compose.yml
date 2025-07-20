@@ -16,7 +16,7 @@ services:
   api:
     build: .
     ports:
-      - "8001:8000"
+      - "8001:8001"
     depends_on:
       db:
         condition: service_started
@@ -30,23 +30,6 @@ services:
       - app-network
     environment:
       - SERVICE_NAME=product-api
-
-  rabbitmq:
-    image: rabbitmq:3-management
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      RABBITMQ_DEFAULT_USER: admin
-      RABBITMQ_DEFAULT_PASS: password
-    networks:
-      - app-network
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
 
 networks:
   app-network:
