@@ -1,28 +1,13 @@
-from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
+# tests/test_database.py
+from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-DATABASE_URL = os.getenv("DATABASE_URL")
-
-engine = create_engine(DATABASE_URL)
-
-SessionLocal = sessionmaker(bind=engine)
+from app.db import engine
 
 
-def test_connection():
+def test_connection_to_database():
     try:
         with engine.connect() as connection:
-            result = connection.execute(text("SELECT * FROM products LIMIT 5;"))
-            print("✅ Connexion réussie à la base Supabase")
-            for row in result:
-                print(row)
+            result = connection.execute(text("SELECT 1"))
+            assert result.fetchone()[0] == 1
     except SQLAlchemyError as e:
-        print("❌ Erreur de connexion :", e)
-
-
-if __name__ == "__main__":
-    test_connection()
+        assert False, f"Database connection failed: {e}"

@@ -62,6 +62,6 @@ jobs:
 
       - name: Run tests
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testdb
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5433/testdb
           API_TOKEN: ${{ secrets.API_TOKEN }}
         run: pytest tests/

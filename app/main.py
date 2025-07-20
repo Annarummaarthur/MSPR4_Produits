@@ -29,7 +29,7 @@ async def handle_external_events(message: aio_pika.IncomingMessage):
             event_type = event.get("event_type")
             data = event.get("data", {})
 
-            print(f"📨 Received event: {event_type} from {event.get('service')}")
+            print(f"Received event: {event_type} from {event.get('service')}")
 
             if event_type == "customer.created":
                 customer_id = data.get("customer_id")
@@ -44,21 +44,21 @@ async def handle_external_events(message: aio_pika.IncomingMessage):
                 print(f"Order cancelled: {order_id}")
 
         except json.JSONDecodeError:
-            print("❌ Error: Invalid JSON in message")
+            print("Error: Invalid JSON in message")
         except Exception as e:
-            print(f"❌ Error processing event: {str(e)}")
+            print(f"Error processing event: {str(e)}")
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("🚀 Starting Products API...")
+    print("Starting Products API...")
 
     Base.metadata.create_all(bind=engine)
-    print("✅ Database tables created")
+    print("Database tables created")
 
     try:
         await broker.connect()
-        print("✅ Connected to message broker")
+        print("Connected to message broker")
 
         await broker.subscribe_to_events(
             event_patterns=[
@@ -71,19 +71,19 @@ async def lifespan(app: FastAPI):
             ],
             callback=handle_external_events,
         )
-        print("✅ Subscribed to external events")
+        print("Subscribed to external events")
 
     except Exception as e:
-        print(f"❌ Failed to connect to message broker: {str(e)}")
+        print(f"Failed to connect to message broker: {str(e)}")
 
     app.state.broker = broker
 
     yield
 
-    print("🛑 Shutting down Products API...")
+    print("Shutting down Products API...")
     if broker.connection and not broker.connection.is_closed:
         await broker.connection.close()
-        print("✅ Message broker connection closed")
+        print("Message broker connection closed")
 
 
 app = FastAPI(
