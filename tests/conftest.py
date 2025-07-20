@@ -8,7 +8,7 @@ from starlette.testclient import TestClient
 
 SQLALCHEMY_DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql://postgres:MSPR4_Produits@db.ujlbrsnqmxxdsibznybx.supabase.co:5432/postgres"
+    "postgresql://postgres:MSPR4_Produits@db.ujlbrsnqmxxdsibznybx.supabase.co:5432/postgres",
 )
 
 

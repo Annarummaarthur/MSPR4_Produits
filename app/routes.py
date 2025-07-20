@@ -43,7 +43,9 @@ async def create_product(
     _: HTTPAuthorizationCredentials = Security(verify_token),
 ):
     try:
-        db_product = ProductModel(**product.model_dump(exclude={"id", "created_at", "updated_at"}))
+        db_product = ProductModel(
+            **product.model_dump(exclude={"id", "created_at", "updated_at"})
+        )
         db.add(db_product)
         db.commit()
         db.refresh(db_product)

@@ -21,13 +21,15 @@ class MessageBroker:
         """Établit la connexion avec RabbitMQ avec retry logic"""
         for attempt in range(max_retries):
             try:
-                print(f"Attempting RabbitMQ connection (attempt {attempt + 1}/{max_retries})")
+                print(
+                    f"Attempting RabbitMQ connection (attempt {attempt + 1}/{max_retries})"
+                )
 
                 self.connection = await aio_pika.connect_robust(
                     self.connection_url,
                     loop=asyncio.get_event_loop(),
                     connection_timeout=10.0,
-                    heartbeat=60
+                    heartbeat=60,
                 )
                 self.channel = await self.connection.channel()
 
@@ -48,7 +50,9 @@ class MessageBroker:
                     await asyncio.sleep(retry_delay)
                     retry_delay *= 1.5
                 else:
-                    print(f"Failed to connect to message broker after {max_retries} attempts")
+                    print(
+                        f"Failed to connect to message broker after {max_retries} attempts"
+                    )
                     raise
 
     async def publish_event(self, event_type: str, data: Dict[str, Any]):

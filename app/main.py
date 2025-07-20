@@ -13,7 +13,9 @@ from app.messaging.broker import MessageBroker
 
 load_dotenv()
 
-RABBITMQ_URL = os.getenv("RABBITMQ_URL", "amqp://admin:password@host.docker.internal:5672/")
+RABBITMQ_URL = os.getenv(
+    "RABBITMQ_URL", "amqp://admin:password@host.docker.internal:5672/"
+)
 SERVICE_NAME = "product-api"
 
 broker = MessageBroker(RABBITMQ_URL, SERVICE_NAME)

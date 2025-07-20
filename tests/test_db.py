@@ -12,15 +12,17 @@ engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(bind=engine)
 
+
 def test_connection():
     try:
         with engine.connect() as connection:
-            result = connection.execute(text("SELECT * FROM products LIMIT 5;")) 
+            result = connection.execute(text("SELECT * FROM products LIMIT 5;"))
             print("✅ Connexion réussie à la base Supabase")
             for row in result:
                 print(row)
     except SQLAlchemyError as e:
         print("❌ Erreur de connexion :", e)
+
 
 if __name__ == "__main__":
     test_connection()
