@@ -27,7 +27,6 @@ class TestProductAPI:
         response = client.post("/products", json=sample_product_data)
         assert response.status_code == 403
 
-
     def test_create_product_minimal_data(self, client, auth_headers):
         """Test creating product with minimal required data"""
         minimal_data = {"name": "Produit Minimal", "price": 10.0}
@@ -187,7 +186,6 @@ class TestProductAPI:
         mock_publish.assert_called_once()
         call_args = mock_publish.call_args
         assert call_args[0][1] == "product.deleted"
-
 
     def test_concurrent_product_operations(self, client, auth_headers, created_product):
         """Test handling concurrent operations on the same product"""
