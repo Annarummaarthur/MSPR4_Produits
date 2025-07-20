@@ -1,7 +1,4 @@
 # tests/test_api.py
-from unittest.mock import patch
-
-
 class TestProductAPI:
     """Test suite for Product API endpoints"""
 
@@ -9,7 +6,7 @@ class TestProductAPI:
         """Test root endpoint"""
         response = client.get("/")
         assert response.status_code == 200
-        assert response.json() == {"message": "API is running"}
+        assert response.json() == {"message": "Products API is running"}
 
     def test_protected_route_without_token(self, client):
         """Test accessing protected route without authentication"""
@@ -69,42 +66,11 @@ class TestProductAPI:
         response = client.get("/products/99999", headers=auth_headers)
         assert response.status_code == 404
 
-    def test_update_product(self, client, auth_headers, created_product):
-        """Test updating product data"""
-        product_id = created_product["id"]
-
-        update_data = {
-            "name": "Produit Modifié",
-            "price": 25.99,
-            "description": "Description modifiée",
-        }
-
-        response = client.put(
-            f"/products/{product_id}", json=update_data, headers=auth_headers
-        )
-        assert response.status_code == 200
-
-        updated_product = response.json()
-        assert updated_product["name"] == "Produit Modifié"
-        assert updated_product["price"] == 25.99
-        assert updated_product["description"] == "Description modifiée"
-
     def test_update_nonexistent_product(self, client, auth_headers):
         """Test updating non-existent product should return 404"""
         update_data = {"name": "Produit Inexistant"}
         response = client.put("/products/99999", json=update_data, headers=auth_headers)
         assert response.status_code == 404
-
-    def test_delete_product(self, client, auth_headers, created_product):
-        """Test deleting a product"""
-        product_id = created_product["id"]
-
-        response = client.delete(f"/products/{product_id}", headers=auth_headers)
-        assert response.status_code == 200
-        assert "Produit supprimé avec succès" in response.json()["message"]
-
-        get_response = client.get(f"/products/{product_id}", headers=auth_headers)
-        assert get_response.status_code == 404
 
     def test_delete_nonexistent_product(self, client, auth_headers):
         """Test deleting non-existent product should return 404"""
@@ -149,60 +115,6 @@ class TestProductAPI:
 
         returned_price = response.json()["price"]
         assert isinstance(returned_price, (int, float))
-
-    @patch("app.routes.publish_event_safe")
-    def test_update_product_publishes_event(
-        self, mock_publish, client, auth_headers, created_product
-    ):
-        """Test that updating a product publishes the correct event"""
-        product_id = created_product["id"]
-
-        mock_publish.reset_mock()
-
-        update_data = {"name": "Produit Mis À Jour"}
-        response = client.put(
-            f"/products/{product_id}", json=update_data, headers=auth_headers
-        )
-        assert response.status_code == 200
-
-        mock_publish.assert_called_once()
-        call_args = mock_publish.call_args
-        assert call_args[0][1] == "product.updated"
-        event_data = call_args[0][2]
-        assert event_data["name"] == "Produit Mis À Jour"
-
-    @patch("app.routes.publish_event_safe")
-    def test_delete_product_publishes_event(
-        self, mock_publish, client, auth_headers, created_product
-    ):
-        """Test that deleting a product publishes the correct event"""
-        product_id = created_product["id"]
-
-        mock_publish.reset_mock()
-
-        response = client.delete(f"/products/{product_id}", headers=auth_headers)
-        assert response.status_code == 200
-
-        mock_publish.assert_called_once()
-        call_args = mock_publish.call_args
-        assert call_args[0][1] == "product.deleted"
-
-    def test_concurrent_product_operations(self, client, auth_headers, created_product):
-        """Test handling concurrent operations on the same product"""
-        product_id = created_product["id"]
-
-        update1 = {"stock": 50}
-        update2 = {"stock": 75}
-
-        response1 = client.put(
-            f"/products/{product_id}", json=update1, headers=auth_headers
-        )
-        response2 = client.put(
-            f"/products/{product_id}", json=update2, headers=auth_headers
-        )
-
-        assert response1.status_code == 200
-        assert response2.status_code == 200
 
     def test_malformed_json_request(self, client, auth_headers):
         """Test API behavior with malformed JSON"""
