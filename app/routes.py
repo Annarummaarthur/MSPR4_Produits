@@ -29,7 +29,7 @@ async def publish_event_safe(request: Request, event_type: str, data: dict):
             print(f"Event published: {event_type}")
         else:
             print(
-                f"⚠Warning: Message broker not available, event {event_type} not published"
+                f"Warning: Message broker not available, event {event_type} not published"
             )
     except Exception as e:
         print(f"Error publishing event {event_type}: {str(e)}")
@@ -50,7 +50,6 @@ async def create_product(
         db.commit()
         db.refresh(db_product)
 
-        # Publier l'événement de création
         await publish_event_safe(
             request,
             PRODUCT_CREATED,
@@ -133,7 +132,6 @@ async def update_product(
                 "description": product.description,
                 "color": product.color,
                 "stock": product.stock,
-                "updated_at": datetime.now(timezone.utc).isoformat(),
                 "changes": changes,
                 "old_values": old_values,
             },
