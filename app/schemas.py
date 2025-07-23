@@ -11,7 +11,7 @@ class ProductBase(BaseModel):
     price: float
     description: Optional[str] = None
     color: Optional[str] = None
-    stock: Optional[str] = None
+    stock: Optional[int] = None
 
 
 class ProductUpdate(BaseModel):
@@ -21,10 +21,9 @@ class ProductUpdate(BaseModel):
     price: Optional[float] = None
     description: Optional[str] = None
     color: Optional[str] = None
-    stock: Optional[str] = None
+    stock: Optional[int] = None
 
 
 class Product(ProductBase):
     id: Optional[int] = None
     created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
