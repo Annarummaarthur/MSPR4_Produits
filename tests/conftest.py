@@ -8,7 +8,7 @@ from app.main import app
 from starlette.testclient import TestClient
 
 SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
-API_TOKEN = os.getenv("PRODUCT_API_TOKEN")
+API_TOKEN = os.getenv("API_TOKEN")
 
 
 @pytest.fixture(scope="function")
@@ -32,7 +32,7 @@ def db_session(db_engine):
 @pytest.fixture(scope="function")
 def auth_headers():
     """Provide authentication headers for tests"""
-    api_token = os.getenv("PRODUCT_API_TOKEN", API_TOKEN)
+    api_token = os.getenv("API_TOKEN", API_TOKEN)
     return {"Authorization": f"Bearer {api_token}"}
 
 

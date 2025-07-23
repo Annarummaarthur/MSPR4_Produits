@@ -84,7 +84,7 @@ jobs:
       - name: Run tests with coverage
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5433/testdb
-          API_TOKEN: ${{ secrets.PRODUCT_API_TOKEN }}
+          API_TOKEN: ${{ secrets.API_TOKEN }}
         run: |
           pytest tests/ \
             --cov=app \
